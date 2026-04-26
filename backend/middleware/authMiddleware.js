@@ -1,30 +1,34 @@
 import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
-export const protect = (req, res, next) => {
+export const protect = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
+    console.log("HEADERS:", req.headers.authorization); // 🔍 DEBUG
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Not authorized" });
+    let token;
+
+    if (req.headers.authorization?.startsWith("Bearer")) {
+      token = req.headers.authorization.split(" ")[1];
     }
 
-    const token = authHeader.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "No token provided" });
+    }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    req.user = decoded; // { id, role }
+    const user = await User.findById(decoded.id || decoded._id);
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    req.user = user;
 
     next();
+
   } catch (err) {
+    console.error("AUTH ERROR:", err.message);
     return res.status(401).json({ message: "Token invalid" });
   }
-};
-
-export const authorize = (...roles) => {
-  return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ message: "Forbidden" });
-    }
-    next();
-  };
 };

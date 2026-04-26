@@ -33,7 +33,7 @@ export default function Courses() {
       : courses.filter((c) => c.category === selected);
 
   return (
-    <div className="pt-28 max-w-7xl mx-auto px-6">
+    <div className="pt-5 max-w-7xl mx-auto px-6">
 
       <h1 className="text-4xl font-bold mb-8">All Courses</h1>
 

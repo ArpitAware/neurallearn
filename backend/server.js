@@ -8,7 +8,10 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
-import userRoutes from "./routes/userRoutes.js"; // ✅ ADD THIS
+import userRoutes from "./routes/userRoutes.js";
+import enrollmentRoutes from "./routes/enrollment.routes.js";
+import paymentRoutes from "./routes/payment.routes.js";
+import progressRoutes from "./routes/progress.routes.js"; // 🔥 NEW
 
 dotenv.config();
 
@@ -30,9 +33,10 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/categories", categoryRoutes);
-
-// ✅ USER ROUTES (WISHLIST + CART)
 app.use("/api/user", userRoutes);
+app.use("/api/enrollment", enrollmentRoutes);
+app.use("/api/payment", paymentRoutes);
+app.use("/api/progress", progressRoutes); // 🔥 IMPORTANT
 
 // SERVER
 const PORT = process.env.PORT || 5000;

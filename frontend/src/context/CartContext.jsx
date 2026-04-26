@@ -1,39 +1,108 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { useAuth } from "./AuthContext";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const { token } = useAuth();
   const [cart, setCart] = useState([]);
 
-  // 🔄 FETCH CART
+  // 🔄 FETCH CART (FINAL FIX)
   const fetchCart = async () => {
-    if (!token) return;
-
     try {
+      const storedToken = localStorage.getItem("token");
+
+      if (!storedToken) return;
+
       const res = await axios.get(
         "http://localhost:5000/api/user/cart",
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${storedToken}`,
           },
         }
       );
 
       setCart(res.data);
     } catch (err) {
-      console.log(err);
+      console.log("Fetch cart error:", err.response?.data || err.message);
+    }
+  };
+
+  // ➕ ADD TO CART
+  const addToCart = async (course) => {
+    try {
+      const storedToken = localStorage.getItem("token");
+
+      await axios.post(
+        `http://localhost:5000/api/user/cart/${course._id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+          },
+        }
+      );
+
+      fetchCart();
+    } catch (err) {
+      console.log("Add to cart error:", err);
+    }
+  };
+
+  // ❌ REMOVE
+  const removeFromCart = async (courseId) => {
+    try {
+      const storedToken = localStorage.getItem("token");
+
+      await axios.delete(
+        `http://localhost:5000/api/user/cart/${courseId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+          },
+        }
+      );
+
+      fetchCart();
+    } catch (err) {
+      console.log("Remove error:", err);
+    }
+  };
+
+  // 🔥 CLEAR CART
+  const clearCart = async () => {
+    try {
+      const storedToken = localStorage.getItem("token");
+
+      await axios.delete(
+        "http://localhost:5000/api/user/cart/clear",
+        {
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+          },
+        }
+      );
+
+      setCart([]);
+    } catch (err) {
+      console.log("Clear cart error:", err);
     }
   };
 
   useEffect(() => {
     fetchCart();
-  }, [token]);
+  }, []);
 
   return (
-    <CartContext.Provider value={{ cart, setCart, fetchCart }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        fetchCart,
+        addToCart,
+        removeFromCart,
+        clearCart,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

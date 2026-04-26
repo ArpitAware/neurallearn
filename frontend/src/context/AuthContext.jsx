@@ -1,14 +1,18 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // ✅ LOAD FROM LOCALSTORAGE DIRECTLY (IMPORTANT FIX)
-  const [token, setToken] = useState(localStorage.getItem("token") || null);
+  const [token, setToken] = useState(undefined); // 🔥 IMPORTANT
+  const [user, setUser] = useState(null);
 
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user")) || null
-  );
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    setToken(storedToken);
+    setUser(storedUser);
+  }, []);
 
   const login = (data) => {
     localStorage.setItem("token", data.token);
@@ -22,8 +26,8 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
-    setUser(null);
     setToken(null);
+    setUser(null);
   };
 
   return (

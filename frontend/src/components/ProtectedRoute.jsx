@@ -2,15 +2,20 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function ProtectedRoute({ children, role }) {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
 
-  // not logged in
-  if (!user) {
+  // ⏳ Wait until auth loads
+  if (token === undefined) {
+    return <div>Loading...</div>;
+  }
+
+  // ❌ Not logged in
+  if (!token) {
     return <Navigate to="/login" />;
   }
 
-  // role mismatch
-  if (role && user.role !== role) {
+  // ❌ Role mismatch
+  if (role && user?.role !== role) {
     return <Navigate to="/" />;
   }
 

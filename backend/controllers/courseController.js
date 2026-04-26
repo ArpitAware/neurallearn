@@ -13,17 +13,16 @@ export const getCourses = async (req, res) => {
 // GET SINGLE COURSE
 export const getCourseById = async (req, res) => {
   try {
-    const course = await Course.findById(req.params.id).populate(
-      "instructor",
-      "name email"
-    );
+    const course = await Course.findById(req.params.id);
 
-    if (!course)
+    if (!course) {
       return res.status(404).json({ message: "Course not found" });
+    }
 
     res.json(course);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Get course error:", err);
+    res.status(500).json({ message: "Failed to fetch course" });
   }
 };
 
@@ -32,7 +31,7 @@ export const createCourse = async (req, res) => {
   try {
     const course = await Course.create({
       ...req.body,
-      instructor: req.user.id,
+      instructor: req.user._id,
       instructorName: req.user.name, // 🔥 ADD THIS
     });
 
@@ -46,7 +45,7 @@ export const createCourse = async (req, res) => {
 export const getMyCourses = async (req, res) => {
   try {
     const courses = await Course.find({
-      instructor: req.user.id,
+      instructor: req.user._id,
     });
 
     res.json(courses);
@@ -65,7 +64,7 @@ export const deleteCourse = async (req, res) => {
     }
 
     // only owner can delete
-    if (course.instructor.toString() !== req.user.id) {
+    if (course.instructor.toString() !== req.user._id) {
       return res.status(403).json({ message: "Not allowed" });
     }
 
@@ -87,7 +86,7 @@ export const updateCourse = async (req, res) => {
     }
 
     // only owner can update
-    if (course.instructor.toString() !== req.user.id) {
+    if (course.instructor.toString() !== req.user._id) {
       return res.status(403).json({ message: "Not allowed" });
     }
 

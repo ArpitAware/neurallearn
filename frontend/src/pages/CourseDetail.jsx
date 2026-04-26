@@ -1,12 +1,18 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 
 export default function CourseDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
+  const { token } = useAuth();
+  const { addToCart } = useCart();
 
   const [course, setCourse] = useState(null);
-  const [currentVideo, setCurrentVideo] = useState(null);
+  const [isEnrolled, setIsEnrolled] = useState(false);
 
   // 🔥 FETCH COURSE
   useEffect(() => {
@@ -15,18 +21,7 @@ export default function CourseDetail() {
         const res = await axios.get(
           `http://localhost:5000/api/courses/${id}`
         );
-
         setCourse(res.data);
-
-        // ✅ SET FIRST VIDEO DEFAULT
-        if (
-          res.data.sections &&
-          res.data.sections.length > 0 &&
-          res.data.sections[0].lectures.length > 0
-        ) {
-          setCurrentVideo(res.data.sections[0].lectures[0].videoUrl);
-        }
-
       } catch (err) {
         console.log(err);
       }
@@ -35,89 +30,93 @@ export default function CourseDetail() {
     fetchCourse();
   }, [id]);
 
-  // LOADING STATE
-  if (!course) {
-    return (
-      <p className="pt-24 text-center text-gray-400">
-        Loading course...
-      </p>
-    );
-  }
+  // 🔥 CHECK ENROLLMENT
+  useEffect(() => {
+    if (!token) return;
+
+    const checkEnrollment = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:5000/api/enrollment/check/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        setIsEnrolled(res.data.enrolled);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    checkEnrollment();
+  }, [id, token]);
+
+  if (!course) return <p className="pt-24">Loading...</p>;
 
   return (
     <div className="pt-24 px-6 max-w-6xl mx-auto">
 
       {/* THUMBNAIL */}
-<img
-  src={course.thumbnail}
-  alt="course"
-  className="w-full h-[350px] object-cover rounded-2xl mb-6"
-/>
-
-{/* TITLE + DESC */}
-<h1 className="text-4xl font-bold">
-  {course.title}
-</h1>
-
-<p className="text-gray-400 mt-3">
-  {course.description}
-</p>
-
-<button className="mt-6 bg-blue-500 px-6 py-3 rounded-xl">
-  Enroll Now
-</button>
-
-{/* 🔥 VIDEO + CONTENT */}
-<div className="mt-10 grid md:grid-cols-3 gap-6">
-
-  {/* 🎬 VIDEO PLAYER */}
-  <div className="md:col-span-2">
-
-    {currentVideo ? (
-      <iframe
-        src={currentVideo}
-        title="video"
-        className="w-full h-[400px] rounded-xl"
-        allowFullScreen
+      <img
+        src={course.thumbnail}
+        className="w-full h-[350px] object-cover rounded-2xl mb-6"
       />
-    ) : (
-      <div className="h-[400px] bg-white/5 rounded-xl flex items-center justify-center">
-        Select a lecture
-      </div>
-    )}
 
-  </div>
+      {/* TITLE */}
+      <h1 className="text-4xl font-bold">
+        {course.title}
+      </h1>
 
-  {/* 📚 SIDEBAR */}
-  <div className="bg-white/5 p-4 rounded-xl h-fit">
+      {/* DESCRIPTION */}
+      <p className="text-gray-400 mt-3 max-w-3xl">
+        {course.description}
+      </p>
 
-    <h2 className="text-xl font-semibold mb-4">
-      Course Content
-    </h2>
+      {/* 🔥 BUTTON */}
+      {isEnrolled ? (
+        <button
+          onClick={() => navigate(`/learn/${course._id}`)}
+          className="mt-6 bg-green-500 px-6 py-3 rounded-xl hover:bg-green-600"
+        >
+          Continue Learning
+        </button>
+      ) : (
+        <button
+          onClick={() => addToCart(course)}
+          className="mt-6 bg-blue-500 px-6 py-3 rounded-xl hover:bg-blue-600"
+        >
+          Add to Cart
+        </button>
+      )}
 
-    {course.sections?.map((section, i) => (
-      <div key={i} className="mb-4">
+      {/* COURSE CONTENT */}
+      <div className="mt-12">
+        <h2 className="text-2xl font-semibold mb-6">
+          Course Content
+        </h2>
 
-        <h3 className="font-semibold mb-2">
-          {section.sectionTitle}
-        </h3>
-
-        {section.lectures.map((lec, j) => (
+        {course.sections?.map((section, i) => (
           <div
-            key={j}
-            onClick={() => setCurrentVideo(lec.videoUrl)}
-            className="p-2 rounded cursor-pointer hover:bg-white/10"
+            key={i}
+            className="mb-6 bg-white/5 p-4 rounded-xl"
           >
-            ▶ {lec.title} ({lec.duration})
+            <h3 className="font-semibold text-lg mb-2">
+              {section.sectionTitle}
+            </h3>
+
+            {section.lectures.map((lec, j) => (
+              <div
+                key={j}
+                className="p-2 text-sm text-gray-300 border-b border-white/10"
+              >
+                ▶ {lec.title}
+              </div>
+            ))}
           </div>
         ))}
-
       </div>
-    ))}
 
-  </div>
-
-</div>
     </div>
   );
 }

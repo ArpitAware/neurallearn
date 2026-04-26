@@ -23,7 +23,7 @@ export default function Login() {
       if (res.data.user.role === "instructor") {
         navigate("/instructor");
       } else {
-        navigate("/dashboard");
+        navigate("/student");
       }
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");

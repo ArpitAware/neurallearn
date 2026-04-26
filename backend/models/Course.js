@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const lectureSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    auto: true, // 🔥 REQUIRED
+  },
   title: String,
   duration: String,
   videoUrl: String,

@@ -1,6 +1,5 @@
 import express from "express";
-import { protect, authorize } from "../middleware/authMiddleware.js";
-import { updateCourse } from "../controllers/courseController.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 import {
   getCourses,
@@ -8,6 +7,7 @@ import {
   getCourseById,
   getMyCourses,
   deleteCourse,
+  updateCourse,
 } from "../controllers/courseController.js";
 
 const router = express.Router();
@@ -15,18 +15,13 @@ const router = express.Router();
 // PUBLIC
 router.get("/", getCourses);
 
-// 🔥 MOVE THIS UP
-router.get("/my", protect, authorize("instructor"), getMyCourses);
-
-// PROTECTED
-router.post("/", protect, authorize("instructor"), createCourse);
-// Update
-router.put("/:id", protect, authorize("instructor"), updateCourse);
-// DELETE
-router.delete("/:id", protect, authorize("instructor"), deleteCourse);
+// PROTECTED (NO AUTHORIZE FOR NOW)
+router.get("/my", protect, getMyCourses);
+router.post("/", protect, createCourse);
+router.put("/:id", protect, updateCourse);
+router.delete("/:id", protect, deleteCourse);
 
 // LAST (IMPORTANT)
 router.get("/:id", getCourseById);
 
 export default router;
-
