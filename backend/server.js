@@ -11,14 +11,22 @@ import categoryRoutes from "./routes/categoryRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import enrollmentRoutes from "./routes/enrollment.routes.js";
 import paymentRoutes from "./routes/payment.routes.js";
-import progressRoutes from "./routes/progress.routes.js"; // 🔥 NEW
+import progressRoutes from "./routes/progress.routes.js";
 
 dotenv.config();
 
 const app = express();
 
-// MIDDLEWARE
-app.use(cors());
+// ✅ CORS CONFIG (UPDATED)
+app.use(cors({
+  origin: [
+    "http://localhost:5173",              // local dev
+    "https://your-app.vercel.app"         // 🔥 replace after frontend deploy
+  ],
+  credentials: true
+}));
+
+// BODY PARSER
 app.use(express.json());
 
 // DB CONNECTION
@@ -36,7 +44,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/enrollment", enrollmentRoutes);
 app.use("/api/payment", paymentRoutes);
-app.use("/api/progress", progressRoutes); // 🔥 IMPORTANT
+app.use("/api/progress", progressRoutes);
 
 // SERVER
 const PORT = process.env.PORT || 5000;
