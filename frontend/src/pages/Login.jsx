@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import API from "../config/api"
 
 export default function Login() {
   const { login } = useAuth();
@@ -14,7 +15,7 @@ export default function Login() {
   const handleSubmit = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        `${API}/auth/login`,
         { email, password, role }
       );
 

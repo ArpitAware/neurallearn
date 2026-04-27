@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import API from "../config/api"
 
 export default function LearningPage() {
   const { courseId } = useParams();
@@ -17,7 +18,7 @@ export default function LearningPage() {
     const fetchCourse = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/courses/${courseId}`
+          `${API}/courses/${courseId}`
         );
 
         setCourse(res.data);
@@ -43,7 +44,7 @@ export default function LearningPage() {
     const fetchProgress = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/progress/${courseId}`,
+          `${API}/progress/${courseId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -66,7 +67,7 @@ export default function LearningPage() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/progress/mark",
+        `${API}/progress/mark`,
         { courseId, lectureId },
         {
           headers: {

@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import CourseCard from "../components/CourseCard";
+import API from "../config/api"
 
 export default function CategoryCourses() {
   const { categoryId } = useParams();
@@ -12,7 +13,7 @@ export default function CategoryCourses() {
     const fetchCourses = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/courses"
+          `${API}/courses`
         );
         setCourses(res.data);
       } catch (err) {

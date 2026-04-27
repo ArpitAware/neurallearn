@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import API from "../config/api"
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function Signup() {
   const handleSubmit = async () => {
     try {
       await axios.post(
-        "http://localhost:5000/api/auth/signup",
+        `${API}/auth/signup`,
         {
           ...form,
           role,

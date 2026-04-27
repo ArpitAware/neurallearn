@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import API from "../../config/api"
 
 export default function EditCourse() {
   const { id } = useParams();
@@ -19,7 +20,7 @@ export default function EditCourse() {
   // FETCH COURSE DATA
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/courses/${id}`)
+      .get(`${API}/courses/${id}`)
       .then((res) => {
         setForm(res.data);
       });
@@ -31,7 +32,7 @@ export default function EditCourse() {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/courses/${id}`,
+        `${API}/courses/${id}`,
         form,
         {
           headers: {

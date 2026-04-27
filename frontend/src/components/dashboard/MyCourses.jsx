@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import API from "../../config/api"
 
 export default function MyCourses() {
   const [courses, setCourses] = useState([]);
@@ -12,7 +13,7 @@ export default function MyCourses() {
         const token = localStorage.getItem("token");
 
         const res = await axios.get(
-          "http://localhost:5000/api/enrollment/my-courses",
+          `${API}/enrollment/my-courses`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

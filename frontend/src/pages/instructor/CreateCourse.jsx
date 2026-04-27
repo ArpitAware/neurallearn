@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import API from "../../config/api"
 
 export default function CreateCourse() {
   const { token } = useAuth();
@@ -18,7 +19,7 @@ export default function CreateCourse() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/categories")
+      .get(`${API}/categories`)
       .then((res) => setCategories(res.data))
       .catch((err) => console.log(err));
   }, []);
@@ -54,7 +55,7 @@ export default function CreateCourse() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/courses",
+        `${API}/courses`,
         {
           ...form,
           sections,

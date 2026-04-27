@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import API from "../config/api"
 
 export default function Cart() {
   const { token } = useAuth();
@@ -16,7 +17,7 @@ export default function Cart() {
   const removeFromCart = async (id) => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/user/cart/${id}`,
+        `${API}/user/cart/${id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -41,7 +42,7 @@ export default function Cart() {
 
       // 1️⃣ Create order
       const { data: order } = await axios.post(
-        "http://localhost:5000/api/payment/create-order",
+        `${API}/payment/create-order`,
         { amount: total }
       );
 
@@ -61,7 +62,7 @@ export default function Cart() {
             );
 
             await axios.post(
-              "http://localhost:5000/api/payment/verify",
+              `${API}/payment/verify`,
               {
                 ...response,
                 courses: courseIds,

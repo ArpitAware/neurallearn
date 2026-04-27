@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import API from "../../config/api"
 
 export default function MyCourses() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export default function MyCourses() {
   // FETCH ONLY MY COURSES
   const fetchCourses = () => {
     axios
-      .get("http://localhost:5000/api/courses/my", {
+      .get(`${API}/courses/my`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setCourses(res.data))
@@ -28,7 +29,7 @@ export default function MyCourses() {
 
     try {
       await axios.delete(
-        `http://localhost:5000/api/courses/${id}`,
+        `${API}/courses/${id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

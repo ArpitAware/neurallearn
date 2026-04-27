@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import API from "../config/api"
 
 const CartContext = createContext();
 
@@ -14,7 +15,7 @@ export const CartProvider = ({ children }) => {
       if (!storedToken) return;
 
       const res = await axios.get(
-        "http://localhost:5000/api/user/cart",
+        `${API}/user/cart`,
         {
           headers: {
             Authorization: `Bearer ${storedToken}`,
@@ -34,7 +35,7 @@ export const CartProvider = ({ children }) => {
       const storedToken = localStorage.getItem("token");
 
       await axios.post(
-        `http://localhost:5000/api/user/cart/${course._id}`,
+        `${API}/user/cart/${course._id}`,
         {},
         {
           headers: {
@@ -55,7 +56,7 @@ export const CartProvider = ({ children }) => {
       const storedToken = localStorage.getItem("token");
 
       await axios.delete(
-        `http://localhost:5000/api/user/cart/${courseId}`,
+        `${API}/user/cart/${courseId}`,
         {
           headers: {
             Authorization: `Bearer ${storedToken}`,
@@ -75,7 +76,7 @@ export const CartProvider = ({ children }) => {
       const storedToken = localStorage.getItem("token");
 
       await axios.delete(
-        "http://localhost:5000/api/user/cart/clear",
+        `${API}/user/cart/clear`,
         {
           headers: {
             Authorization: `Bearer ${storedToken}`,

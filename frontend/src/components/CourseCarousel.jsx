@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import CourseCard from "./CourseCard";
+import API from "../config/api"
 
 export default function CourseCarousel() {
   const [courses, setCourses] = useState([]);
@@ -12,7 +13,7 @@ export default function CourseCarousel() {
   // FETCH FROM BACKEND
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/courses")
+      .get(`${API}/courses`)
       .then((res) => setCourses(res.data))
       .catch((err) => console.log(err));
   }, []);

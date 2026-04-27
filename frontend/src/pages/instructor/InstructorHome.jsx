@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import API from "../../config/api"
 
 export default function InstructorHome() {
   const { user, token } = useAuth();
@@ -10,7 +11,7 @@ export default function InstructorHome() {
     const fetchMyCourses = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/courses/my",
+          `${API}/courses/my`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

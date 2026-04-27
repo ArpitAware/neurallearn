@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import API from "../config/api"
 
 export default function CourseDetail() {
   const { id } = useParams();
@@ -19,7 +20,7 @@ export default function CourseDetail() {
     const fetchCourse = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/courses/${id}`
+          `${API}/courses/${id}`
         );
         setCourse(res.data);
       } catch (err) {
@@ -37,7 +38,7 @@ export default function CourseDetail() {
     const checkEnrollment = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/enrollment/check/${id}`,
+          `${API}/enrollment/check/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

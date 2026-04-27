@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import API from "../config/api"
 
 export default function InstructorDashboard() {
   const { token } = useAuth();
@@ -18,7 +19,7 @@ export default function InstructorDashboard() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/courses",
+        `${API}/courses`,
         form,
         {
           headers: {

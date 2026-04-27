@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import API from "../config/api"
 
 export default function Wishlist() {
   const { token } = useAuth();
@@ -9,7 +10,7 @@ export default function Wishlist() {
   const fetchWishlist = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/user/wishlist",
+        `${API}/user/wishlist`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -24,7 +25,7 @@ export default function Wishlist() {
   const toggleWishlist = async (courseId) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/user/wishlist/${courseId}`,
+        `${API}/user/wishlist/${courseId}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },

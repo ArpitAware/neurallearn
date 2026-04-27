@@ -4,6 +4,7 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
+import API from "../config/api"
 
 export default function CourseCard({ course }) {
   const { token } = useAuth();
@@ -19,7 +20,7 @@ export default function CourseCard({ course }) {
 
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/user/wishlist",
+          `${API}/user/wishlist`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -51,7 +52,7 @@ export default function CourseCard({ course }) {
 
     try {
       await axios.post(
-        `http://localhost:5000/api/user/wishlist/${course._id}`,
+        `${API}/user/wishlist/${course._id}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -72,7 +73,7 @@ export default function CourseCard({ course }) {
 
     try {
       await axios.post(
-        `http://localhost:5000/api/user/cart/${course._id}`,
+        `${API}/user/cart/${course._id}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -93,7 +94,7 @@ export default function CourseCard({ course }) {
 
     try {
       await axios.post(
-        `http://localhost:5000/api/user/cart/${course._id}`,
+        `${API}/user/cart/${course._id}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },

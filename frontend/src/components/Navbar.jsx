@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { FaHeart, FaShoppingCart } from "react-icons/fa";
 import { FiMenu, FiX } from "react-icons/fi";
+import API from "../config/api"
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -21,7 +22,7 @@ export default function Navbar() {
   // FETCH CATEGORIES
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/categories")
+      .get(`${API}/categories`)
       .then((res) => setCategories(res.data))
       .catch((err) => console.log(err));
   }, []);

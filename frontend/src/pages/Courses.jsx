@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import CourseCard from "../components/CourseCard";
+import API from "../config/api"
 
 export default function Courses() {
   const [courses, setCourses] = useState([]);
@@ -9,7 +10,7 @@ export default function Courses() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/courses")
+      .get(`${API}/courses`)
       .then((res) => {
         setCourses(res.data);
         setLoading(false);
