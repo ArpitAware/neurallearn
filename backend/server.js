@@ -21,7 +21,7 @@ const app = express();
 app.use(cors({
   origin: [
     "http://localhost:5173",              // local dev
-    "https://your-app.vercel.app"         // 🔥 replace after frontend deploy
+    "https://neurallearn-theta.vercel.app/"        
   ],
   credentials: true
 }));
